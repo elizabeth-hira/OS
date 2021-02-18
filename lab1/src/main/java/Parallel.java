@@ -61,9 +61,12 @@ public class Parallel {
 
     static String maxParallelStream(int count, List<String> list) throws InterruptedException, ExecutionException {
         ForkJoinPool customThreadPool = new ForkJoinPool(count);
-        return customThreadPool.submit(() -> list.parallelStream().reduce("", (String x, String y)->{
-            if(x.length() < y.length()) return y;
-            else return x;
-        })).get();
+        return customThreadPool.submit(() -> list.parallelStream().max((s1, s2)->{
+            if(s1.length() > s2.length())
+                return 1;
+            if(s1.length() < s2.length())
+                return -1;
+            return 0;
+        })).get().get();
     }
 }
